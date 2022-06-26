@@ -152,7 +152,7 @@ def similarity_subset(input_data_path, output_data_path, threshold = 0.8, return
         similarities[i] = cosine_sim(old_blurbs[i], new_blurbs[i])
     
     M = sum(similarities < threshold)
-    print(f'Remaining number of blurbs: {M}. Total reduction of {round((N - M)/N * 100, 2)}%!')
+    print(f'Remaining number of blurbs: {M}. Total reduction of {round((N - M)/N * 100, 2)}%.')
     
     print(f'Saving file to the path {output_data_path}')
     # Find those blurbs where the similarity is less than our threshold, 
