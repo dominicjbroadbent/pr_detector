@@ -83,8 +83,8 @@ def cosine_sim(doc_1, doc_2):
     # Return the similarity
     return pairwise_similarity[0, 1]
 
-def compare_blurbs(index, similarity = False):
-    """Print out the two blurbs, as well as their similarity score if requested.
+def compare_blurbs(index, similarity = False, temp_decision = False):
+    """Print out the two blurbs, as well as their similarity score and the temp decision, if requested.
     
     Parameters
     ----------
@@ -93,6 +93,9 @@ def compare_blurbs(index, similarity = False):
     
     similarty: boolean
         whether or not the similarity score should be printed
+    
+    similarty: boolean
+        whether or not the temp decision should be printed
         
     Yields
     --------
@@ -103,6 +106,8 @@ def compare_blurbs(index, similarity = False):
     print(f'Index: {index} \n')
     if similarity:   
         print(f'Similarity: {round(cosine_sim(old_blurbs[index], new_blurbs[index]), 3)}\n')
+    if temp_decision:
+        print(f'Temp decision: {significant[index]}\n')
     print(old_blurbs[index], '\n')
     print(new_blurbs[index], '\n')
     
