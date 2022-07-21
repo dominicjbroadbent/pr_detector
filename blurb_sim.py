@@ -83,7 +83,7 @@ def cosine_sim(doc_1, doc_2):
     
     # Return the similarity
     return pairwise_similarity[0, 1]
-    
+
 def similarity_subset(input_data_path, output_data_path, threshold = 0.8, return_ = False):
     """Function to load data consisting of two columns, the first containing old company blurbs
     the second containing new blurbs, work out their similarity and return a new data file consisting 

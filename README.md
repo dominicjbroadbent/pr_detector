@@ -1,7 +1,7 @@
 # bnlp
 NLP model to detect differences between company blurbs.
 
-The model normalises blurb text, and then embeds them into a space where a notion of similarity can be computed. We can then use this similarity measure to identify blurbs that are worth investigating further.
+The model normalises the blurb text, and then embeds them into a space where a notion of similarity can be computed. We can then use this similarity measure to identify blurbs that are worth investigating further.
 
 To read more about the model, see:
 https://www.nltk.org/_modules/nltk/stem/porter.html,
