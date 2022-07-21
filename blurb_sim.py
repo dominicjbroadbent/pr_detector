@@ -16,6 +16,7 @@ def stem_tokens(tokens):
         a list of tokens
         
     Returns
+    ---------
     stemmed_tokens: list
         a list of stemmed tokens
     """
