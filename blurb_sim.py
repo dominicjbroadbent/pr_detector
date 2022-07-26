@@ -3,9 +3,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm.notebook import tqdm
 
+# Stemming seems to cause lots of inconsistency issues when it comes to vectorising the stop words. 
+# Should look into this further as I think it could help accuracy. But from what I've read the main goal of stemming is
+# is speed which is not a concern here.
 def stem_tokens(tokens):
     """Stems a list of tokens using a modified version of the Porter stemming algorithm
     provided by the nltk package.
@@ -27,8 +32,31 @@ def stem_tokens(tokens):
     stemmed_tokens = [stemmer.stem(item) for item in tokens]
     return stemmed_tokens
 
+def lemmatise_tokens(tokens, pos):
+    """Lemmatises a list of tokens using the word net lemmatiser provided by the nltk package.
+    
+    Parameters
+    ----------
+    tokens: list
+        a list of tokens
+    
+    pos: string
+        one of 'n' for nouns, 'v' for verbs, 'a' for adjectives, 'r' for adverbs,
+        's' for satellite adjectives
+        
+    Returns
+    ---------
+    lemmatised_tokens: list
+        a list of lemmatised tokens
+    """
+    # Lemmatise the tokens using the word net lemmatiser
+    lemmatised_tokens = [WordNetLemmatizer().lemmatize(word, pos = pos) for word in tokens]
+    
+    return lemmatised_tokens
+    
 def normalise(text):
-    """Normalises text data by removing punctation, setting everything to lower case and tokenising.
+    """Normalises text data tokenising, removing punctation, setting everything to lower case
+    and finally lemmatising.
     
     Punctation list provided by the string module.
     
@@ -39,21 +67,32 @@ def normalise(text):
         
     Returns
     ---------
-    token: list
-        a list of tokens for the normalised text
+    tokens: list
+        a list of normalised tokens
     """
+    # First we tokenise
+    tokens = nltk.word_tokenize(text)    
+    
     # Define a map which removes punctation
     remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
-    # First we remove punctuation
-    punc = text.translate(remove_punctuation_map)
+    # Replace the punctation with an empty string
+    puncs = [word.translate(remove_punctuation_map) for word in tokens]
     
+    # Remove the empty strings
+    puncs_removed = list(filter(None, puncs))
+                         
     # Then set everything to lower case
-    lower = punc.lower()
+    lower = [word.lower() for word in puncs_removed]
     
-    # And finally, tokenise
-    token = nltk.word_tokenize(lower)
-    return token
+    # Finally we lemmatise everything
+    lemmatised_tokens = lemmatise_tokens(lower, pos = 'v')
+    
+    return lemmatised_tokens
+
+# Make sure we normalise the stop words according to how we are normalising the text
+# to ensure consistency.
+stopwords = [normalise(word)[0] for word in stopwords.words('english')]
 
 def cosine_sim(doc_1, doc_2):
     """Calculate the cosine similarity between two text documents.
@@ -73,9 +112,10 @@ def cosine_sim(doc_1, doc_2):
     """
     # Define a vectoriser using the term frequency-inverse document frequency (TF-IDF) measure
     # (The more frequent a word appears, the less important it is)
-    vectoriser = TfidfVectorizer(tokenizer = normalise, stop_words = 'english')
+    vectoriser = TfidfVectorizer(tokenizer = normalise, stop_words = stopwords)
     
-    # Learn the vocabulary of the two documents, and transform to vectors using TF-IDF
+    # Learn the vocabulary of the two documents, and transform to vectors using TF-IDF.
+    # This produces normalises vectors so no need to normalise when computing cosine similarity.
     tf_idf = vectoriser.fit_transform([doc_1, doc_2])
     
     # Calculate the pairwise similarity matrix
