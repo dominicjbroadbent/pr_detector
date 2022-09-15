@@ -1,10 +1,12 @@
-import nltk, string, openpyxl
+import string
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
 from nltk.corpus import stopwords
+from nltk import word_tokenize
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm.notebook import tqdm
 
@@ -26,7 +28,7 @@ def stem_tokens(tokens):
         a list of stemmed tokens
     """
     # Load in Martin Porter's stemming algorithm
-    stemmer = nltk.stem.porter.PorterStemmer()
+    stemmer = PorterStemmer()
     
     # Stem each token in the input list
     stemmed_tokens = [stemmer.stem(item) for item in tokens]
@@ -71,7 +73,7 @@ def normalise(text):
         a list of normalised tokens
     """
     # First we tokenise
-    tokens = nltk.word_tokenize(text)    
+    tokens = word_tokenize(text)    
     
     # Define a map which removes punctation
     remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
