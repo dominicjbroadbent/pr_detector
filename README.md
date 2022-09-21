@@ -1,4 +1,4 @@
-# pr_detecor
+# pr_detector
 NLP model to detect when a company pivots or rebrands using blurbs taken from their site.
 
 The model normalises the blurb text, and then embeds them into a space where a notion of similarity can be computed. We can then use this similarity measure to identify blurbs that are worth investigating further.
